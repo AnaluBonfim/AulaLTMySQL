@@ -1,23 +1,41 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package program;
 
 import db.DB;
 import java.sql.Connection;
-/**
- *
- * @author curso
- */
+import java.sql.Statement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 public class Program {
-    
+
     public static void main(String[] args) {
-        Connection conn = DB.getConnection();
+
+        Connection conn = null;
+        Statement st = null;
+        ResultSet rs = null;
+
+        try {
+            conn = DB.getConnection();
+            st = conn.createStatement();
+            rs = st.executeQuery("SELECT * FROM department");
+
+            while (rs.next()) {
+                System.out.println(rs.getInt("id") + " - " + rs.getString("name"));
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         
-        System.out.println("Conexao realizada com sucesso!");
-        
-        DB.closeConnection();
+        finally {
+            DB.closeResultSet(rs);
+            DB.closeStatement(st);
+            DB.closeConnection();
+        }
+
+        System.out.println("Conexão realizada com sucesso!");
     }
+    
+    
     
 }
